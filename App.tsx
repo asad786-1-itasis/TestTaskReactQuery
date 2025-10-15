@@ -5,12 +5,7 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { StyleSheet, useColorScheme, View } from 'react-native';
 import {
   NavigationContainer,
 } from '@react-navigation/native';
@@ -22,7 +17,7 @@ const Stack = createStackNavigator();
 const queryClient = new QueryClient();
 
 
-const ProductStack = () => {
+function ProductStack() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -42,16 +37,6 @@ const ProductStack = () => {
   )
 }
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  return (
-    <NavigationContainer>
-      <AppContent />
-    </NavigationContainer>
-  );
-}
-
 function AppContent() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -59,11 +44,12 @@ function AppContent() {
     </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+function App() {
+  return (
+    <NavigationContainer>
+      <AppContent />
+    </NavigationContainer>
+  );
+}
 
 export default App;
