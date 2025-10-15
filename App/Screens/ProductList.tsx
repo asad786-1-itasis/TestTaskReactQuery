@@ -1,17 +1,27 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, RefreshControl, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
+import {
+    View,
+    Text,
+    FlatList,
+    Image,
+    ActivityIndicator,
+    RefreshControl,
+    StyleSheet,
+    TouchableOpacity,
+} from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { GETAPICALL } from '../ApiCalling/ApiCalling';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { theme } from '../utils/theme';
 
-
-//making navigation type safe.
+// ✅ Navigation types
 export type RootParams = {
     ProductList: undefined;
     ProductDetail: { product: Product };
 };
-// ✅ Product Interface (TypeScript type safety)
+
+// ✅ Product Interface
 interface Product {
     id: number;
     title: string;
@@ -27,25 +37,27 @@ const fetchProducts = async (): Promise<Product[]> => {
 };
 
 const ProductList = () => {
-
-    const isMounted = React.useRef(true);
-    React.useEffect(() => {
+    const isMounted = useRef(true);
+    useEffect(() => {
         return () => {
             isMounted.current = false;
         };
     }, []);
+
     const { data, isLoading, refetch, isFetching } = useQuery({
         queryKey: ['products'],
         queryFn: fetchProducts,
-
     });
-    let navigation = useNavigation<NativeStackNavigationProp<RootParams>>()
-    // console.log('My loading Data is this >>>>>>>>>>', data);
 
-    const [visibleCount, setVisibleCount] = useState(7); //load only 7 items initially.
+    const navigation = useNavigation<NativeStackNavigationProp<RootParams>>();
+    const [visibleCount, setVisibleCount] = useState(7);
+
     const renderItem = useMemo(
         () => ({ item }: { item: Product }) => (
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('ProductDetail', { product: item })}>
+            <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => navigation.navigate('ProductDetail', { product: item })}
+            >
                 <View style={styles.cardWrapper}>
                     <View style={styles.card}>
                         <Image source={{ uri: item.image }} style={styles.image} />
@@ -60,19 +72,24 @@ const ProductList = () => {
         ),
         []
     );
+
     const handleLoadMore = () => {
         if (data && visibleCount < data.length) {
             setVisibleCount(prev => prev + 10);
         }
     };
+
     const onRefresh = () => {
         refetch();
     };
+
     if (isLoading) {
         return (
             <View style={styles.loaderContainer}>
-                <ActivityIndicator size="large" color="#007bff" />
-                <Text style={{ marginTop: 10, color: '#555' }}>Loading products...</Text>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+                <Text style={{ marginTop: theme.spacing.sm, color: theme.colors.muted }}>
+                    Loading products...
+                </Text>
             </View>
         );
     }
@@ -89,7 +106,11 @@ const ProductList = () => {
                 refreshControl={<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />}
                 ListFooterComponent={
                     visibleCount < (data?.length || 0) ? (
-                        <ActivityIndicator size="small" color="#007bff" style={{ marginVertical: 10 }} />
+                        <ActivityIndicator
+                            size="small"
+                            color={theme.colors.primary}
+                            style={{ marginVertical: theme.spacing.sm }}
+                        />
                     ) : null
                 }
             />
@@ -102,9 +123,9 @@ export default ProductList;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
-        paddingHorizontal: 12,
-        paddingTop: 10,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: theme.spacing.md,
+        paddingTop: theme.spacing.sm,
     },
     loaderContainer: {
         flex: 1,
@@ -112,45 +133,41 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     cardWrapper: {
-        borderRadius: 12,
-        backgroundColor: '#fff',
-        marginVertical: 8,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 4,
-        elevation: 3, // Android shadow
+        borderRadius: theme.radius.md,
+        backgroundColor: theme.colors.surface,
+        marginVertical: theme.spacing.sm,
+        ...theme.shadow.default,
     },
-
     card: {
         flexDirection: 'row',
-        borderRadius: 12,
-        backgroundColor: '#fff',
-        overflow: 'hidden',
-        paddingVertical: 20,
-        paddingHorizontal: 10,
+        borderRadius: theme.radius.md,
+        backgroundColor: theme.colors.surface,
+        // overflow: 'hidden',
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.sm,
+
     },
     image: {
         width: 70,
         height: 70,
-        borderRadius: 10,
-        marginRight: 10,
+        borderRadius: theme.radius.sm,
+        marginRight: theme.spacing.sm,
         resizeMode: 'contain',
     },
     title: {
-        fontSize: 14,
+        fontSize: theme.typography.medium,
         fontWeight: '600',
-        color: '#222',
+        color: theme.colors.text,
     },
     category: {
-        fontSize: 12,
-        color: '#777',
+        fontSize: theme.typography.small,
+        color: theme.colors.muted,
         marginVertical: 2,
     },
     price: {
-        fontSize: 14,
+        fontSize: theme.typography.medium,
         fontWeight: 'bold',
-        color: '#007bff',
+        color: theme.colors.primary,
         marginTop: 4,
     },
 });

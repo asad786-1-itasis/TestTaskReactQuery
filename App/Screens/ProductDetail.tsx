@@ -1,10 +1,18 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Dimensions,
+    TouchableOpacity,
+} from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { theme } from '../utils/theme'; // ✅ using your theme
 
 const { height } = Dimensions.get('window');
 
-// ✅ Product Interface (same as ProductList)
 interface Product {
     id: number;
     title: string;
@@ -14,8 +22,10 @@ interface Product {
     description: string;
 }
 
-// ✅ Type for route params
-type ProductDetailRouteProp = RouteProp<{ ProductDetail: { product: Product } }, 'ProductDetail'>;
+type ProductDetailRouteProp = RouteProp<
+    { ProductDetail: { product: Product } },
+    'ProductDetail'
+>;
 
 const ProductDetail = () => {
     const route = useRoute<ProductDetailRouteProp>();
@@ -24,22 +34,24 @@ const ProductDetail = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.imageContainer}>
+            {/* Image Section */}
+            <View style={[styles.imageContainer, theme.shadow.default]}>
                 <Image source={{ uri: product.image }} style={styles.image} />
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}>
                     <Text style={styles.backText}>←</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.detailContainer}>
+
+            {/* Details Section */}
+            <View style={[styles.detailContainer, theme.shadow.default]}>
                 <Text style={styles.title}>{product.title}</Text>
                 <Text style={styles.category}>{product.category}</Text>
                 <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-
                 <Text style={styles.descriptionHeader}>Description</Text>
                 <Text style={styles.description}>{product.description}</Text>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Add to Cart</Text>
-                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -50,91 +62,81 @@ export default ProductDetail;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: theme.colors.background,
     },
     imageContainer: {
         height: height / 3,
-        backgroundColor: '#fff',
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 3,
+        backgroundColor: theme.colors.surface,
+        borderBottomLeftRadius: theme.radius.lg,
+        borderBottomRightRadius: theme.radius.lg,
         position: 'relative',
     },
     image: {
         width: '100%',
         height: '100%',
         resizeMode: 'contain',
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        borderBottomLeftRadius: theme.radius.lg,
+        borderBottomRightRadius: theme.radius.lg,
     },
     backButton: {
         position: 'absolute',
-        top: 40,
-        left: 20,
+        top: theme.spacing.lg,
+        left: theme.spacing.lg,
         backgroundColor: 'rgba(0,0,0,0.4)',
         borderRadius: 25,
-        padding: 8,
+        padding: theme.spacing.sm,
     },
     backText: {
-        color: '#fff',
-        fontSize: 18,
+        color: theme.colors.surface,
+        fontSize: theme.typography.large,
         fontWeight: '600',
     },
     detailContainer: {
-        backgroundColor: '#fff',
-        marginTop: 12,
-        borderRadius: 12,
-        padding: 16,
-        marginHorizontal: 12,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.08,
-        shadowOffset: { width: 0, height: 1 },
-        shadowRadius: 2,
+        backgroundColor: theme.colors.surface,
+        marginTop: theme.spacing.md,
+        borderRadius: theme.radius.md,
+        padding: theme.spacing.lg,
+        marginHorizontal: theme.spacing.md,
     },
     title: {
-        fontSize: 18,
+        fontSize: theme.typography.title,
         fontWeight: '700',
-        color: '#222',
-        marginBottom: 6,
+        color: theme.colors.text,
+        marginBottom: theme.spacing.sm,
     },
     category: {
-        fontSize: 14,
-        color: '#777',
-        marginBottom: 10,
+        fontSize: theme.typography.medium,
+        color: theme.colors.muted,
+        marginBottom: theme.spacing.md,
     },
     price: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#007bff',
-        marginBottom: 14,
+        fontSize: theme.typography.heading,
+        fontWeight: '700',
+        color: theme.colors.primary,
+        marginBottom: theme.spacing.lg,
     },
     descriptionHeader: {
-        fontSize: 16,
+        fontSize: theme.typography.large,
         fontWeight: '600',
-        color: '#333',
-        marginBottom: 6,
+        color: theme.colors.text,
+        marginBottom: theme.spacing.sm,
     },
     description: {
-        fontSize: 14,
-        color: '#555',
+        fontSize: theme.typography.medium,
+        color: theme.colors.muted,
         lineHeight: 20,
-        marginBottom: 20,
+        marginBottom: theme.spacing.lg,
     },
     button: {
-        backgroundColor: '#007bff',
-        paddingVertical: 12,
-        borderRadius: 10,
+        backgroundColor: theme.colors.primary,
+        paddingVertical: theme.spacing.md,
+        borderRadius: theme.radius.md,
         alignItems: 'center',
-        marginTop: 10,
+        marginTop: theme.spacing.md,
     },
     buttonText: {
-        color: '#fff',
-        fontSize: 15,
+        color: theme.colors.surface,
+        fontSize: theme.typography.medium,
         fontWeight: '600',
     },
 });
