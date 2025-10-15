@@ -11,28 +11,52 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import {
+  NavigationContainer,
+} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ProductList from './App/Screens/ProductList';
+import ProductDetail from './App/Screens/ProductDetail';
+const Stack = createStackNavigator();
+const queryClient = new QueryClient();
+
+
+const ProductStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animation: 'fade',
+      }}
+    >
+      <Stack.Screen
+        name="ProductList"
+        component={ProductList}
+      />
+      <Stack.Screen
+        name="ProductDetail"
+        component={ProductDetail}
+      />
+    </Stack.Navigator>
+  )
+}
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    <NavigationContainer>
       <AppContent />
-    </SafeAreaProvider>
+    </NavigationContainer>
   );
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
   return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <ProductStack />
+    </QueryClientProvider>
   );
 }
 
