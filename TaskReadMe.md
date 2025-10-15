@@ -78,11 +78,6 @@ The app follows **clean architecture**, **type safety**, and **scalable UI pract
 
 ---
 
-## 🧩 Future Enhancements (Optional)
-- Add **Dark Mode** support using theme variants.
-- Implement a **ThemeProvider** for global theme switching.
-- Add **“Add to Cart” functionality** with a cart screen and local state management.
-- Integrate **offline caching** with React Query’s persistence layer.
 
 ---
 
@@ -95,7 +90,7 @@ The app follows **clean architecture**, **type safety**, and **scalable UI pract
 | **State / Data** | React Query |
 | **Navigation** | React Navigation |
 | **Styling** | Custom theme tokens (`theme.ts`) |
-| **API Calls** | Axios (via `GETAPICALL`) |
+| **API Calls** | Axios custom method write in apicalling.ts (via `GETAPICALL`) |
 
 ---
 
